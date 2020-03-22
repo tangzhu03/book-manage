@@ -1,10 +1,9 @@
 package com.example.bookmanage.controller;
 
-import ch.qos.logback.classic.Logger;
 import com.example.bookmanage.pojo.Book;
 import com.example.bookmanage.service.BookService;
-import com.example.bookmanage.utils.BookUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +21,7 @@ import java.util.List;
 @RequestMapping("books")
 public class BookController {
 
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(BookController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
 
     @Autowired
     private BookService bookService;
@@ -33,7 +32,7 @@ public class BookController {
     @GetMapping("getBookById/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable("id") String id) {
         Assert.isTrue(StringUtils.isNotBlank(id), "id不能为空！");
-        Book book = BookUtils.getBook();
+        Book book = new Book();
         Long idNumber = null;
         try {
             idNumber = Long.valueOf(id);
@@ -42,6 +41,7 @@ public class BookController {
         }
         book.setId(idNumber);
         Book result = bookService.getBookById(book);
+        LOGGER.info("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -51,7 +51,7 @@ public class BookController {
     @GetMapping("getBookByName/{name}")
     public ResponseEntity<Book> getBookByName(@PathVariable("name") String name) {
         Assert.isTrue(StringUtils.isNotBlank(name), "书名不能为空！");
-        Book book = BookUtils.getBook();
+        Book book = new Book();
         book.setName(name);
         Book result = bookService.getBookByName(book);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -63,7 +63,7 @@ public class BookController {
     @GetMapping("getBooksByPress/{press}")
     public ResponseEntity<List<Book>> getBooksByPress(@PathVariable("press") String press) {
         Assert.isTrue(StringUtils.isNotBlank(press), "出版社不能为空！");
-        Book book = BookUtils.getBook();
+        Book book = new Book();
         book.setPress(press);
         List<Book> booksByPress = bookService.getBooksByPress(book);
         return new ResponseEntity<>(booksByPress, HttpStatus.OK);
@@ -75,7 +75,7 @@ public class BookController {
     @GetMapping("getBooksByFloor/{floor}")
     public ResponseEntity<List<Book>> getBooksByFloor(@PathVariable("floor") String floor) {
         Assert.isTrue(StringUtils.isNotBlank(floor), "楼层不能为空！");
-        Book book = BookUtils.getBook();
+        Book book = new Book();
         Integer floorNumber = Integer.valueOf(floor);
         book.setFloor(floorNumber);
         List<Book> booksByPress = bookService.getBooksByFloor(book);
@@ -89,10 +89,10 @@ public class BookController {
      * @param col 列
      * @return 该书架上所有书籍
      */
-    @GetMapping("getBooksByFloor/{row}/{col}")
+    @GetMapping("getBooksByShelf/{row}/{col}")
     public ResponseEntity<List<Book>> getBooksByShelf(@PathVariable("row") String row, @PathVariable("col") String col) {
         Assert.isTrue(StringUtils.isNotBlank(row) && StringUtils.isNotBlank(col), "书架编号不能为空！");
-        Book book = BookUtils.getBook();
+        Book book = new Book();
         Integer rowNumber = Integer.valueOf(row);
         Integer colNumber = Integer.valueOf(col);
         book.setRow(rowNumber);
@@ -109,10 +109,10 @@ public class BookController {
      * @param floor 层号
      * @return 该书架某层上所有书籍
      */
-    @GetMapping("getBooksByFloor/{row}/{col}/{floor}")
+    @GetMapping("getBooksByShelfFloor/{row}/{col}/{floor}")
     public ResponseEntity<List<Book>> getBooksByShelfFloor(@PathVariable("row") String row, @PathVariable("col") String col, @PathVariable("floor") String floor) {
         Assert.isTrue(StringUtils.isNotBlank(row) && StringUtils.isNotBlank(col) && StringUtils.isNotBlank(floor), "书架编号和书架层号不能为空！");
-        Book book = BookUtils.getBook();
+        Book book = new Book();
         Integer rowNumber = Integer.valueOf(row);
         Integer colNumber = Integer.valueOf(col);
         Integer floorNumber = Integer.valueOf(floor);
@@ -129,9 +129,8 @@ public class BookController {
     @GetMapping("getBooksByRoom/{room}")
     public ResponseEntity<List<Book>> getBooksByRoom(@PathVariable("room") String room) {
         Assert.isTrue(StringUtils.isNotBlank(room), "房间号不能为空！");
-        Book book = BookUtils.getBook();
-        Integer roomNumber = Integer.valueOf(room);
-        book.setFloor(roomNumber);
+        Book book = new Book();
+        book.setRoom(room);
         List<Book> booksByPress = bookService.getBooksByRoom(book);
         return new ResponseEntity<>(booksByPress, HttpStatus.OK);
     }
@@ -142,7 +141,7 @@ public class BookController {
     @GetMapping("getBooksByAuthor/{author}")
     public ResponseEntity<List<Book>> getBooksByAuthor(@PathVariable("author") String author) {
         Assert.isTrue(StringUtils.isNotBlank(author), "作者姓名不能为空！");
-        Book book = BookUtils.getBook();
+        Book book = new Book();
         book.setAuthor(author);
         List<Book> booksByPress = bookService.getBooksByAuthor(book);
         return new ResponseEntity<>(booksByPress, HttpStatus.OK);
@@ -151,7 +150,7 @@ public class BookController {
     @DeleteMapping("deleteBookById/{id}")
     public void deleteBookById(@PathVariable("id") String id) {
         Assert.isTrue(StringUtils.isNotBlank(id), "id不能为空!");
-        Book book = BookUtils.getBook();
+        Book book = new Book();
         Long idNumber = null;
         try {
             idNumber = Long.valueOf(id);
