@@ -34,7 +34,13 @@ public class BookController {
     public ResponseEntity<Book> getBookById(@PathVariable("id") String id) {
         Assert.isTrue(StringUtils.isNotBlank(id), "id不能为空！");
         Book book = BookUtils.getBook();
-        book.setId(Long.valueOf(id));
+        Long idNumber = null;
+        try {
+            idNumber = Long.valueOf(id);
+        } catch (NumberFormatException e) {
+            LOGGER.error("输入的id不正确", e);
+        }
+        book.setId(idNumber);
         Book result = bookService.getBookById(book);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
